@@ -5,17 +5,79 @@
  */
 package view;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import javax.swing.JOptionPane;
+import javax.swing.ListModel;
+import model.*;
+
 /**
  *
  * @author xande
  */
 public class MainMenu extends javax.swing.JFrame {
 
+    private ServiceBank serviceBank;
+    private String[] services;
+    private ListModel<String> lista;
+    private Service[] servicesArray;
+    private User me;
+    private PropostaBank propostaBank;
+
     /**
      * Creates new form MainMenu
+     *
+     * @param serviceBank
+     * @param me
+     * @param purp
      */
-    public MainMenu() {
+    public MainMenu(ServiceBank serviceBank, User me, PropostaBank purp) {
+
+        this.serviceBank = serviceBank;
+        this.propostaBank = purp;
+        services = getTitles();
+        servicesArray = serviceBank.returnServices();
+        this.me = me;
+
+        lista = new javax.swing.AbstractListModel<String>() {
+            @Override
+            public int getSize() {
+                return services.length;
+            }
+
+            @Override
+            public String getElementAt(int index) {
+                return services[index];
+            }
+
+        };
+
         initComponents();
+
+        if (me.getRank() < 2) {
+            this.btEdit.setVisible(false);
+            this.jMenuPainelADM.setVisible(false);
+        }
+        
+        
+    }
+
+    public String[] getTitles() {
+        Service[] serviceArray = serviceBank.returnServices();
+        String[] names = new String[serviceArray.length];
+
+        for (int i = 0; i < serviceArray.length; i++) {
+            names[i] = serviceArray[i].getTitle();
+        }
+
+        return names;
+    }
+
+    public void refresh() {
+        this.services = this.getTitles();
+        this.labelTitle.setText(this.services[tableJobs.getSelectedIndex()]);
+        this.labelDesc.setText(String.format("<html><div WIDTH=%d>%s</div></html>", 350, this.servicesArray[tableJobs.getSelectedIndex()].getDescription()));
     }
 
     /**
@@ -33,34 +95,48 @@ public class MainMenu extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         labelTitle = new javax.swing.JLabel();
         labelDesc = new javax.swing.JLabel();
-        btReport = new javax.swing.JButton();
+        btEdit = new javax.swing.JButton();
         btContratar = new javax.swing.JButton();
+        btNovoPedido = new javax.swing.JButton();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
+        jMenu2 = new javax.swing.JMenu();
+        jMenuPainelADM = new javax.swing.JMenu();
 
         jTextField1.setText("jTextField1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        tableJobs.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
+        tableJobs.setBackground(new java.awt.Color(204, 255, 255));
+        tableJobs.setModel(this.lista);
+        tableJobs.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        tableJobs.setSelectedIndex(0);
+        tableJobs.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                tableJobsValueChanged(evt);
+            }
         });
         jScrollPane1.setViewportView(tableJobs);
 
-        labelTitle.setText("Title");
+        labelTitle.setText(this.services[0]);
 
-        labelDesc.setText("Desciption");
-        labelDesc.setToolTipText("");
+        labelDesc.setText(this.servicesArray[0].getDescription());
+        labelDesc.setToolTipText("mantenha em segredo");
         labelDesc.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
-        btReport.setText("Reportar");
-        btReport.addActionListener(new java.awt.event.ActionListener() {
+        btEdit.setText("Editar");
+        btEdit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btReportActionPerformed(evt);
+                btEditActionPerformed(evt);
             }
         });
 
-        btContratar.setText("Contratar");
+        btContratar.setText("Fazer Proposta");
+        btContratar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btContratarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -68,33 +144,51 @@ public class MainMenu extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(btReport)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btContratar))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(labelTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(labelDesc, javax.swing.GroupLayout.DEFAULT_SIZE, 271, Short.MAX_VALUE))
-                .addContainerGap())
+                        .addComponent(btEdit)
+                        .addGap(56, 56, 56)
+                        .addComponent(btContratar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(labelDesc, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(labelTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(184, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btContratar))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(labelTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(labelDesc, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
-                        .addComponent(btReport)))
+                .addComponent(labelTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 71, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(labelDesc, javax.swing.GroupLayout.DEFAULT_SIZE, 164, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btEdit)
+                    .addComponent(btContratar))
                 .addContainerGap())
         );
+
+        btNovoPedido.setText("Criar um Band Request");
+        btNovoPedido.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btNovoPedidoActionPerformed(evt);
+            }
+        });
+
+        jMenuBar1.setMargin(new java.awt.Insets(0, 1, 0, 0));
+
+        jMenu1.setText("Fazer Pedido");
+        jMenu1.setMargin(new java.awt.Insets(0, 3, 0, 3));
+        jMenuBar1.add(jMenu1);
+
+        jMenu2.setText("Pendentes");
+        jMenu2.setMargin(new java.awt.Insets(0, 3, 0, 3));
+        jMenuBar1.add(jMenu2);
+
+        jMenuPainelADM.setText("Painel Admin");
+        jMenuPainelADM.setMargin(new java.awt.Insets(0, 3, 0, 3));
+        jMenuBar1.add(jMenuPainelADM);
+
+        setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -104,64 +198,64 @@ public class MainMenu extends javax.swing.JFrame {
                 .addGap(29, 29, 29)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(188, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btNovoPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(24, 24, 24)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 384, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(75, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btNovoPedido, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap(55, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btReportActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btReportActionPerformed
+    private void btEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btEditActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MainMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MainMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MainMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(MainMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        EditMenu edit = new EditMenu(servicesArray[this.tableJobs.getSelectedIndex()], serviceBank, this.tableJobs.getSelectedIndex(), this);
+        edit.setLocationRelativeTo(null);
+        edit.setVisible(true);
+    }//GEN-LAST:event_btEditActionPerformed
+
+    private void tableJobsValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_tableJobsValueChanged
+        this.labelTitle.setText(this.services[tableJobs.getSelectedIndex()]);
+        this.labelDesc.setText(String.format("<html><div WIDTH=%d>%s</div></html>", 350, this.servicesArray[tableJobs.getSelectedIndex()].getDescription()));
+    }//GEN-LAST:event_tableJobsValueChanged
+
+    private void btContratarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btContratarActionPerformed
+        if (this.me.getRank() < 1) {
+            JOptionPane.showMessageDialog(null, "Apenas profissionais podem fazer propostas a clientes :c");
+        } else {
+            view.Proposta prop = new view.Proposta(this.serviceBank.getServices().get(this.tableJobs.getSelectedIndex()), this.propostaBank, this.me);
+            prop.setLocationRelativeTo(null);
+            prop.setVisible(true);
         }
-        //</editor-fold>
+    }//GEN-LAST:event_btContratarActionPerformed
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new MainMenu().setVisible(true);
-            }
-        });
-    }
+    private void btNovoPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btNovoPedidoActionPerformed
+        
+    }//GEN-LAST:event_btNovoPedidoActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btContratar;
-    private javax.swing.JButton btReport;
+    private javax.swing.JButton btEdit;
+    private javax.swing.JButton btNovoPedido;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenu jMenuPainelADM;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTextField1;

@@ -6,6 +6,10 @@
 package view;
 
 import java.awt.Color;
+import javax.swing.JFrame;
+import model.PropostaBank;
+import model.ServiceBank;
+import model.SubmissionBank;
 import model.User;
 import model.Users;
 
@@ -15,13 +19,21 @@ import model.Users;
  */
 public class Login extends javax.swing.JFrame {
 
+    private final SubmissionBank subBank;
+    
     /**
      * Creates new form Login
+     * @param bank
+     * @param serviceBank
+     * @param purp
+     * @param subBank
      */
-    public Login(Users bank) {
-        initComponents();
+    public Login(Users bank, ServiceBank serviceBank, PropostaBank purp, SubmissionBank subBank) {
         this.bank = bank;
-        
+        this.serviceBank = serviceBank;
+        this.propostaBank = purp;
+        this.subBank = subBank;
+        initComponents();
     }
 
     /**
@@ -127,6 +139,7 @@ public class Login extends javax.swing.JFrame {
 
     private void buttonCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonCadastrarActionPerformed
         Cadastrar form = new Cadastrar(this.bank);
+        form.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         form.setLocationRelativeTo(null);
         form.setVisible(true);
     }//GEN-LAST:event_buttonCadastrarActionPerformed
@@ -147,7 +160,10 @@ public class Login extends javax.swing.JFrame {
         }else{
             this.textNome.setText("Nome:");
             this.buttonEntrar.setBackground(Color.GREEN);
-            
+            this.page = new MainMenu(this.serviceBank, aux, this.propostaBank);
+            page.setLocationRelativeTo(null);
+            page.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+            page.setVisible(true);
         }
     }//GEN-LAST:event_buttonEntrarActionPerformed
 
@@ -167,7 +183,9 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JLabel textSenha;
     // End of variables declaration//GEN-END:variables
     private Users bank;
-
+    private ServiceBank serviceBank;
+    private PropostaBank propostaBank;
+    private JFrame page;
 }
 
 
