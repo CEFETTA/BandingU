@@ -7,6 +7,7 @@ package view;
 
 import java.awt.Color;
 import javax.swing.JFrame;
+import model.PropostaBank;
 import model.ServiceBank;
 import model.User;
 import model.Users;
@@ -22,10 +23,12 @@ public class Login extends javax.swing.JFrame {
      * @param bank
      * @param serviceBank
      */
-    public Login(Users bank, ServiceBank serviceBank) {
-        initComponents();
+    public Login(Users bank, ServiceBank serviceBank, PropostaBank purp) {
         this.bank = bank;
         this.serviceBank = serviceBank;
+        this.propostaBank = purp;
+        initComponents();
+        
     }
 
     /**
@@ -152,7 +155,7 @@ public class Login extends javax.swing.JFrame {
         }else{
             this.textNome.setText("Nome:");
             this.buttonEntrar.setBackground(Color.GREEN);
-            this.page = new MainMenu(this.serviceBank, aux);
+            this.page = new MainMenu(this.serviceBank, aux, this.propostaBank);
             page.setLocationRelativeTo(null);
             page.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
             page.setVisible(true);
@@ -176,6 +179,7 @@ public class Login extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
     private Users bank;
     private ServiceBank serviceBank;
+    private PropostaBank propostaBank;
     private JFrame page;
 }
 

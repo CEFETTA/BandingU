@@ -23,14 +23,18 @@ public class MainMenu extends javax.swing.JFrame {
     private ListModel<String> lista;
     private Service[] servicesArray;
     private User me;
+    private PropostaBank propostaBank;
     
     /**
      * Creates new form MainMenu
      * @param serviceBank
      * @param me
+     * @param purp
      */
-    public MainMenu(ServiceBank serviceBank, User me) {
+    public MainMenu(ServiceBank serviceBank, User me, PropostaBank purp) {
+        
         this.serviceBank = serviceBank;
+        this.propostaBank = purp;
         services = getTitles();
         servicesArray = serviceBank.returnServices();
         this.me = me;
@@ -214,7 +218,7 @@ public class MainMenu extends javax.swing.JFrame {
         if(this.me.getRank() < 1){
             JOptionPane.showMessageDialog(null, "Apenas profissionais podem fazer propostas a clientes :c");
         }else{
-            Proposta prop = new Proposta();
+            view.Proposta prop = new view.Proposta(this.serviceBank.getServices().get(this.tableJobs.getSelectedIndex()), this.propostaBank);
             prop.setLocationRelativeTo(null);
             prop.setVisible(true);
         }

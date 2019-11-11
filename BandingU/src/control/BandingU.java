@@ -21,10 +21,14 @@ public class BandingU {
         FileInputStream in;
         FileInputStream servIn;
         ObjectInputStream readData;
-        final Users users;
+        
+        final Users users;//guarda os usuarios
+        
+        final PropostaBank propostaBank;//guarda as propostas
 
-        final ServiceBank serviceBank;
+        final ServiceBank serviceBank;//guarda os requerimentos
 
+        
         try {
             in = new FileInputStream("data");
             readData = new ObjectInputStream(in);
@@ -95,7 +99,9 @@ public class BandingU {
 
         in.close();
 
-        Login login = new Login(users, serviceBank);
+        propostaBank = new PropostaBank();
+        
+        Login login = new Login(users, serviceBank, propostaBank);
         login.setLocationRelativeTo(null);
         login.addWindowListener(exitListener);
         login.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);

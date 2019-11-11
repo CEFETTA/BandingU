@@ -5,16 +5,24 @@
  */
 package view;
 
+import model.PropostaBank;
+import model.Service;
+import model.ServiceBank;
+
 /**
  *
  * @author aluno
  */
 public class Proposta extends javax.swing.JFrame {
 
+    private Service service;
+    private PropostaBank propostaBank;
     /**
      * Creates new form Proposta
      */
-    public Proposta() {
+    public Proposta(Service service, PropostaBank bank) {
+        this.service = service;
+        this.propostaBank = bank;
         initComponents();
     }
 
@@ -54,6 +62,11 @@ public class Proposta extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTextArea1);
 
         btConfirm.setText("Enviar");
+        btConfirm.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btConfirmActionPerformed(evt);
+            }
+        });
 
         btCancel.setText("Cancelar");
         btCancel.addActionListener(new java.awt.event.ActionListener() {
@@ -103,7 +116,7 @@ public class Proposta extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jSlider1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -127,6 +140,12 @@ public class Proposta extends javax.swing.JFrame {
     private void btCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btCancelActionPerformed
         this.setVisible(false);
     }//GEN-LAST:event_btCancelActionPerformed
+
+    private void btConfirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btConfirmActionPerformed
+        model.Proposta purp = new model.Proposta(this.jTextArea1.getText(), this.jSlider1.getValue(), this.service);
+        this.propostaBank.addProposta(purp);
+        this.setVisible(false);
+    }//GEN-LAST:event_btConfirmActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
