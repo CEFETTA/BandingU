@@ -9,6 +9,7 @@ import java.awt.Color;
 import javax.swing.JFrame;
 import model.PropostaBank;
 import model.ServiceBank;
+import model.SubmissionBank;
 import model.User;
 import model.Users;
 
@@ -18,17 +19,21 @@ import model.Users;
  */
 public class Login extends javax.swing.JFrame {
 
+    private final SubmissionBank subBank;
+    
     /**
      * Creates new form Login
      * @param bank
      * @param serviceBank
+     * @param purp
+     * @param subBank
      */
-    public Login(Users bank, ServiceBank serviceBank, PropostaBank purp) {
+    public Login(Users bank, ServiceBank serviceBank, PropostaBank purp, SubmissionBank subBank) {
         this.bank = bank;
         this.serviceBank = serviceBank;
         this.propostaBank = purp;
+        this.subBank = subBank;
         initComponents();
-        
     }
 
     /**

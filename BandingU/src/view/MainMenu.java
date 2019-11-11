@@ -24,21 +24,22 @@ public class MainMenu extends javax.swing.JFrame {
     private Service[] servicesArray;
     private User me;
     private PropostaBank propostaBank;
-    
+
     /**
      * Creates new form MainMenu
+     *
      * @param serviceBank
      * @param me
      * @param purp
      */
     public MainMenu(ServiceBank serviceBank, User me, PropostaBank purp) {
-        
+
         this.serviceBank = serviceBank;
         this.propostaBank = purp;
         services = getTitles();
         servicesArray = serviceBank.returnServices();
         this.me = me;
-        
+
         lista = new javax.swing.AbstractListModel<String>() {
             @Override
             public int getSize() {
@@ -51,31 +52,34 @@ public class MainMenu extends javax.swing.JFrame {
             }
 
         };
-        
+
         initComponents();
-        
-        if(me.getRank() < 2){
-        this.btEdit.setVisible(false);
+
+        if (me.getRank() < 2) {
+            this.btEdit.setVisible(false);
+            this.jMenuPainelADM.setVisible(false);
         }
+        
+        
     }
-    
-    public String[] getTitles(){
+
+    public String[] getTitles() {
         Service[] serviceArray = serviceBank.returnServices();
         String[] names = new String[serviceArray.length];
-        
-        for(int i=0 ; i < serviceArray.length; i++){
+
+        for (int i = 0; i < serviceArray.length; i++) {
             names[i] = serviceArray[i].getTitle();
         }
-        
+
         return names;
     }
 
-    public void refresh(){
+    public void refresh() {
         this.services = this.getTitles();
         this.labelTitle.setText(this.services[tableJobs.getSelectedIndex()]);
         this.labelDesc.setText(String.format("<html><div WIDTH=%d>%s</div></html>", 350, this.servicesArray[tableJobs.getSelectedIndex()].getDescription()));
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -93,10 +97,11 @@ public class MainMenu extends javax.swing.JFrame {
         labelDesc = new javax.swing.JLabel();
         btEdit = new javax.swing.JButton();
         btContratar = new javax.swing.JButton();
+        btNovoPedido = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
-        jMenu3 = new javax.swing.JMenu();
+        jMenuPainelADM = new javax.swing.JMenu();
 
         jTextField1.setText("jTextField1");
 
@@ -143,7 +148,7 @@ public class MainMenu extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(btEdit)
                         .addGap(56, 56, 56)
-                        .addComponent(btContratar))
+                        .addComponent(btContratar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(labelDesc, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(labelTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(184, Short.MAX_VALUE))
@@ -162,6 +167,13 @@ public class MainMenu extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        btNovoPedido.setText("Criar um Band Request");
+        btNovoPedido.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btNovoPedidoActionPerformed(evt);
+            }
+        });
+
         jMenuBar1.setMargin(new java.awt.Insets(0, 1, 0, 0));
 
         jMenu1.setText("Fazer Pedido");
@@ -172,9 +184,9 @@ public class MainMenu extends javax.swing.JFrame {
         jMenu2.setMargin(new java.awt.Insets(0, 3, 0, 3));
         jMenuBar1.add(jMenu2);
 
-        jMenu3.setText("Painel Admin");
-        jMenu3.setMargin(new java.awt.Insets(0, 3, 0, 3));
-        jMenuBar1.add(jMenu3);
+        jMenuPainelADM.setText("Painel Admin");
+        jMenuPainelADM.setMargin(new java.awt.Insets(0, 3, 0, 3));
+        jMenuBar1.add(jMenuPainelADM);
 
         setJMenuBar(jMenuBar1);
 
@@ -186,16 +198,23 @@ public class MainMenu extends javax.swing.JFrame {
                 .addGap(29, 29, 29)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btNovoPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(24, 24, 24)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 384, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btNovoPedido, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap(55, Short.MAX_VALUE))
         );
 
@@ -203,35 +222,40 @@ public class MainMenu extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btEditActionPerformed
-        
+
         EditMenu edit = new EditMenu(servicesArray[this.tableJobs.getSelectedIndex()], serviceBank, this.tableJobs.getSelectedIndex(), this);
         edit.setLocationRelativeTo(null);
         edit.setVisible(true);
     }//GEN-LAST:event_btEditActionPerformed
-        
+
     private void tableJobsValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_tableJobsValueChanged
         this.labelTitle.setText(this.services[tableJobs.getSelectedIndex()]);
         this.labelDesc.setText(String.format("<html><div WIDTH=%d>%s</div></html>", 350, this.servicesArray[tableJobs.getSelectedIndex()].getDescription()));
     }//GEN-LAST:event_tableJobsValueChanged
 
     private void btContratarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btContratarActionPerformed
-        if(this.me.getRank() < 1){
+        if (this.me.getRank() < 1) {
             JOptionPane.showMessageDialog(null, "Apenas profissionais podem fazer propostas a clientes :c");
-        }else{
-            view.Proposta prop = new view.Proposta(this.serviceBank.getServices().get(this.tableJobs.getSelectedIndex()), this.propostaBank);
+        } else {
+            view.Proposta prop = new view.Proposta(this.serviceBank.getServices().get(this.tableJobs.getSelectedIndex()), this.propostaBank, this.me);
             prop.setLocationRelativeTo(null);
             prop.setVisible(true);
         }
     }//GEN-LAST:event_btContratarActionPerformed
 
+    private void btNovoPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btNovoPedidoActionPerformed
+        
+    }//GEN-LAST:event_btNovoPedidoActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btContratar;
     private javax.swing.JButton btEdit;
+    private javax.swing.JButton btNovoPedido;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenu jMenuPainelADM;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTextField1;

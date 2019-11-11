@@ -8,6 +8,7 @@ package view;
 import model.PropostaBank;
 import model.Service;
 import model.ServiceBank;
+import model.User;
 
 /**
  *
@@ -17,12 +18,14 @@ public class Proposta extends javax.swing.JFrame {
 
     private Service service;
     private PropostaBank propostaBank;
+    private User me;
     /**
      * Creates new form Proposta
      */
-    public Proposta(Service service, PropostaBank bank) {
+    public Proposta(Service service, PropostaBank bank, User me) {
         this.service = service;
         this.propostaBank = bank;
+        this.me = me;
         initComponents();
     }
 
@@ -142,7 +145,7 @@ public class Proposta extends javax.swing.JFrame {
     }//GEN-LAST:event_btCancelActionPerformed
 
     private void btConfirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btConfirmActionPerformed
-        model.Proposta purp = new model.Proposta(this.jTextArea1.getText(), this.jSlider1.getValue(), this.service);
+        model.Proposta purp = new model.Proposta(this.jTextArea1.getText(), this.jSlider1.getValue(), this.service, this.me);
         this.propostaBank.addProposta(purp);
         this.setVisible(false);
     }//GEN-LAST:event_btConfirmActionPerformed

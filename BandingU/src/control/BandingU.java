@@ -21,20 +21,21 @@ public class BandingU {
         FileInputStream in;
         FileInputStream servIn;
         ObjectInputStream readData;
-        
+
         final Users users;//guarda os usuarios
-        
+
         final PropostaBank propostaBank;//guarda as propostas
 
         final ServiceBank serviceBank;//guarda os requerimentos
 
+        final SubmissionBank submissionBank;//guarda os pedidos dos clientes
         
         try {
             in = new FileInputStream("data");
             readData = new ObjectInputStream(in);
 
             Users aux = (Users) readData.readObject();
-        } catch (Exception e) {
+        } catch (IOException | ClassNotFoundException e) {
             JOptionPane.showMessageDialog(null, "Banco de dados corrompido, iniciando um novo...");
             File file = new File("data");
             file.createNewFile();
@@ -51,10 +52,12 @@ public class BandingU {
 
         users = (Users) readData.readObject();
 
+        in.close();
+
         try {
             in = new FileInputStream("services");
 
-        } catch (Exception e) {
+        } catch (FileNotFoundException e) {
             JOptionPane.showMessageDialog(null, "Banco de dados corrompido, iniciando um novo...");
             File file = new File("services");
             file.createNewFile();
@@ -71,6 +74,33 @@ public class BandingU {
 
         serviceBank = (ServiceBank) readData.readObject();
 
+        in.close();
+
+        try {
+            in = new FileInputStream("propostas");
+
+        } catch (FileNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "Banco de dados corrompido, iniciando um novo...");
+            File file = new File("propostas");
+            file.createNewFile();
+            PropostaBank prop = new PropostaBank();
+            try (FileOutputStream propOut = new FileOutputStream("propostas")) {
+                ObjectOutputStream servOutStr = new ObjectOutputStream(propOut);
+                servOutStr.writeObject(prop);
+            }
+        } finally {
+            in = new FileInputStream("propostas");
+            readData = new ObjectInputStream(in);
+        }
+
+        propostaBank = (PropostaBank) readData.readObject();
+
+        in.close();
+
+        //FAZER STREAM SUBMISSION
+        submissionBank = new SubmissionBank();
+        
+        
         WindowListener exitListener = new WindowAdapter() {
 
             @Override
@@ -81,6 +111,7 @@ public class BandingU {
                         JOptionPane.QUESTION_MESSAGE, null, null, null);
                 if (confirm == 0) {
                     try {
+
                         FileOutputStream out = new FileOutputStream("data");
                         ObjectOutputStream saveData = new ObjectOutputStream(out);
                         saveData.writeObject(users);
@@ -88,6 +119,10 @@ public class BandingU {
                         out = new FileOutputStream("services");
                         saveData = new ObjectOutputStream(out);
                         saveData.writeObject(serviceBank);
+
+                        out = new FileOutputStream("propostas");
+                        saveData = new ObjectOutputStream(out);
+                        saveData.writeObject(propostaBank);
 
                     } catch (IOException e2) {
                         System.err.print("ERROR>" + e2.getMessage());
@@ -99,9 +134,7 @@ public class BandingU {
 
         in.close();
 
-        propostaBank = new PropostaBank();
-        
-        Login login = new Login(users, serviceBank, propostaBank);
+        Login login = new Login(users, serviceBank, propostaBank, submissionBank);
         login.setLocationRelativeTo(null);
         login.addWindowListener(exitListener);
         login.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
